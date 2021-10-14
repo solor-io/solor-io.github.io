@@ -35,7 +35,9 @@ As a result of these complexities, there are many ways to say the same thing usi
 
 Tinkar intends to support integration of clinical terminology and local concepts to support increased data quality for interoperable clinical information. High-quality clinical data enables healthcare systems across the enterprise to conduct robust and meaningful data analysis and increase overall interoperability, which ultimately enhances quality of care across all medical facilities.
 
-![Motivations for Tinkar](media/analysis_venn_diagram.jpg)
+<p align="center">
+  <img width="460" height="300" src="/media/analysis_venn_diagram.jpg">
+</p>
 
 ### The Problem Tinkar Addresses
 
@@ -74,15 +76,135 @@ Tinkar addresses challenges and problems from the above implementation examples:
 
 ### About Tinkar
 
+Tinkar provides the foundation of a knowledge architecture that is intended to integrate reference terminology from distributors (e.g., SNOMED CT®, LOINC®, RxNorm) with local concepts to support interoperable information semantics across the enterprise. 
+
+This specification introduces an agile approach to terminology design and formatting that promotes the use of self-describing data. It is a shift from hard-coded models that have been favored due to their prescriptive nature but have shown limited flexibility and extensibility. Like FHIR, this specification places the focus on a self-describing, extensible approach to representing terminology. Therefore, Tinkar aims to be both
+self-describing and completely machine processed:
+
+1. Self-describing machine-readable representation of terminology, such that if an application can process the metadata, it should be able to import the content/concepts and make it available to enterprise applications.
+2. The machine-readable terminology could generate human-readable documentation so that business analysts and developers can understand and apply it correctly.
+
 ### Tinkar Objectives and Purpose
+
+This specification describes the requirements and characteristics of systems required to manage terminology produced by a variety of organizations across a healthcare enterprise. This foundation must allow enterprise to extend terminology standards and implement extensions in a timely fashion.
+
+This specification is intended to support healthcare organizations’ standard terminology modules, value sets, and coding systems as well as local terms and equivalence mappings.
+
+A standard-based Tinkar specification is necessary to support the operation of a variety of systems intended to deliver knowledge management for terminology to vendors, providers, and even standards-development organizations, like HL7.
 
 ### Related Efforts
 
+Previous efforts have attempted to create a common set of terminology capabilities and services by specifying a single predefined structure for managing terminology. Unfortunately, a hardwired structure that works for one standard may not work for another. The inability to integrate content across terminology standards is a barrier to implementing services and modules that can deliver integrated concepts, code lists, and value sets required by enterprise systems for treatment, research, business process automation, quality measures, and outcome analysis.
+
+- Clinical applications require integrated terminology to create interoperable clinical statements that are organized into messages, documents, or resources.
+- Data analysis and research require integrated terminology to analyze aggregated information. Interoperability, CDS, or other types of automation require common semantics based on a set of integrated models across reference standards (e.g., SNOMED CT®, LOINC®, RxNorm).
+
+The Unified Medical Language System (UMLS) Metathesaurus is a compilation of multiple sources organized into ‘concepts’ that contain terms from many sources. The terms within a concept are declared synonyms by UMLS editors. However, its use in terminology systems has limited utility for several reasons. First, UMLS concepts are created on lexically-based rules and use very little of the additional information (relationships between concepts) that may be available from the source terminology. It does not permit classification to identify cases of possible missed synonymy. Second, issues of currency occur because of dyssynchrony of release dates between source terminologies and the UMLS itself. Third, the UMLS does not support a contribution model. That is, it is a static file that cannot be amended to support additional terms that may be required to fill gaps in existing terminologies subsumed by the Metathesaurus; it does not support extensions. Lastly, there is no efficient format for sharing integrated Metathesaurus content (though there is Rich Release Format [RRF]). The UMLS is not an architecture for terminology management. It may only serve as a reference, noting the aforementioned limitations. An implementation of Tinkar may help address these limitations.
+
+CTS2 is an architecture for terminology management that supports history retrieval, though it does not support an arbitrarily granular change set model for versioning. The Tinkar specification, in contrast, provides that every new assertion, whether a new component or a change to an existing component, must have a precise version coordinate that govern granular change control. CTS2 asserts a specific terminology model and does not support unanticipated properties with a self-describing model.
+
+The USCDI is an amalgamation of various encoding standards. The standards being identified for specific data elements do not themselves provide consistency for how encoding is represented, how those encoding standards change over time, and how those encoding standards are distributed. As demonstrated by COVID-19 data needs, coordinated extension of content, timely distribution of updates, and consistency of representation are required to effectively respond to needs of public health and syndromic surveillance. Tinkar could help make it easier to standardize the representation, distribution, version and configuration management, and ability to share extensions to the USCDI as well as the underlying terminology systems themselves.
+
 ### Benefits of Self-Describing Architecture
+
+Tinkar is self-describing and completely machine-processed. A self-describing architecture is defined in a report from Queensland University of Technology as follows: “[t]he idea is that self-descriptions of data and other techniques would allow context-understanding programs to selectively find what users want, or for programs to work on behalf of humans and organizations to make them more scalable, efficient and productive.” [9] Key advantages of a self-describing architecture (or metadata driven architecture) [10] include the following details: 
+
+**Changes can be reviewed immediately** – Every action or change by end users can be immediately previewed or tested, without needing any compilation or deployment process. The review can also be done before saving or publishing the changes, which makes it an interactive development environment for designers to create functionality in an iterative manner.
+
+**Version control with easy rollback** – Every time any changes are made to published terminology artifacts, the historic versions of the metadata files are maintained. This enables easy version control and rollback when necessary. Every time a change is made to any artifact, the prior version that existed is archived. When a developer needs to roll back to the prior version, it can be achieved easily.
+
+**Any data source can be added** – A self-describing architecture facilitates the ability for multiple types of terminology data sources to be connected to the system.
+
+**Define granular coordinates and configuration management** – The functionality for defining granular, user-defined settings and controls for granular elements of clinical terminology management is supported. This includes create, read, and append settings, as well as management of individual elements, like fields or other controls. 
+
+**Faster extensions** – A benefit of a self-describing architecture is that it can abstract a lot of the deep internal complexities that makes development of standard terminologies complicated. This approach can improve processes around extensions to terminology.
 
 ### Architectural Separation of Concerns
 
+Increased reliance on computerized health records, including Electronic Health Records Systems, requires standardized medical terminology to encode health information consistently across systems and enterprises. Clinicians require not only objective quantitative measurements (e.g., 90 beats per minute for a patient’s pulse), but also procedural context (e.g., pulse oximetry, manual) about past observations or requests for future interventions. While two quantitative measurements may be the same, the procedural information could indicate meaningful semantic differences and lead to different clinical interpretation and treatment.  As information is exchanged across systems, the solution requires a common understanding of data, a method to support knowledge-representation, and clinical decision rules based on common terminology and statements. Each component must address an aspect, and together need to address the requirements of clinicians. Current HL7 standard implementations rely on profiles and templates to disambiguate statement and terminology, and provide sufficient precision for transactions, documents, and standards-based APIs. Therefore, the architectural approach described here is applicable to standards organizations developing interoperability for enterprise and project-specific implementations in equal measure.
+
+Functional decomposition—often referred to as a *Separation of Concerns (SoC)* —across components or sections with a specific purpose is a foundational design principle for complex system architecture. SoC allows a complete system to be subdivided into distinct sections or components with well-defined functionality and dependencies. If successful, this approach allows individual sections to be able to be reused, as well as designed, implemented, and updated independently to address emerging requirements. This is especially useful and important in a medical context given how many different health information and clinical terminology projects are ongoing at any given time. Efforts are often uncoordinated and led by disparate and unrelated standards development organizations. In these cases, SoC allows teams to work independently, in coordination with each other, and reuse the resulting artifacts.
+
+<p align="center">
+  <img src="/media/separation_of_concerns_knowledge_architecture.jpg">
+</p>
+
+*Separation of Concerns is an architectural design principle, whereby a system is divided into distinct sections, such that each section can address separate concerns. In this case, each architectural layer may build upon artifacts from lower layers.*
+
+**Foundational Architecture** – The Foundational layer of the Knowledge Architecture provides the common elements of interoperability, such as: object identity, versioning, modularity, and knowledge representation. It includes (a) the foundation and building blocks of the common model; (b) how the repeatable transformation process of disparate standards into the common model promotes interoperability with other environments; and (c) how the modules of the architecture are tightly version controlled over time. The Tinkar Reference Model belongs in this layer.
+
+**Terminology Knowledge** - The Terminology Knowledge layer is responsible for structured sets of medical terms and codes that define concepts of interest, including descriptions, dialects, language, and semantic hierarchy. SNOMED CT®, LOINC®, and RxNorm are part of this layer. It defines what valid codes or expressions may be used by higher level layers.
+
+**Statement Model** – The Statement Model layer is responsible for defining how data elements are combined to create a statement. This layer reuses the artifacts defined in the Terminology Knowledge layer. The ANF Reference Model [11] belongs in this layer.
+
+**Assertional Knowledge** – The Assertional Knowledge layer makes use of the Terminology Knowledge layer concepts to specify non-defining facts that may be used by procedural knowledge algorithms. An example fact might be that “thiazide diuretics treat hypertension.” Assertional Knowledge may also indicate what symptoms may be associated with a disorder.
+
+**Procedural Knowledge** – The Procedural Knowledge layer, also known as imperative knowledge, is the knowledge exercised in the performance of some task. An example would be determining a hypertension treatment plan by analyzing a combination of a patient’s clinical statements and the available assertional knowledge. The procedural knowledge is responsible for information about standard ways to carry out specific procedures, as well as other procedural guidelines, (e.g., treatment protocols for diseases and order sets focused on certain patient situations). Procedural knowledge, together with assertional knowledge, enables clinical decision support, quality measurement, and patient safety. This layer relies on the architectural foundation and terminology layers, incorporates the statement model for information retrieval, and uses the assertional knowledge. Procedural knowledge artifacts may include clinical alert rules, reminders, etc., that trigger actions or recommend interventions.
+
+Examining a clinical procedure for controlling hypertension illustrates each of the layers of the informatics architectural separation of concerns.
+
+- At the Terminology Knowledge layer there may be various codes and terms from disparate source terminologies to define a concept (e.g., hypertension). Ideally, these overlapping codes and terms would be oriented to the same parent concept during the transformation and integration process at the Foundational Architecture layer.
+- The Statement Model layer enables representation of blood pressure measurement values (e.g., systolic BP = 140 mmHg), or the categorical data (e.g., pregnancy induced hypertension vs. renal hypertension) within a standard data structure to facilitate information exchange or retrieval, such as within a standards- based clinical statement (i.e., CIMI, CDA, FHIR, ANF, etc.).
+- The Assertional Knowledge layer represents non-procedural statements, or facts, such as “Stage 2 high blood pressure is over 140 systolic or 90 diastolic,” or “beta-blockers and ACE inhibitors may be used to treat hypertension”, or “beta-blockers are contraindicated in patients with a diagnosis of reactive airway disease.”
+- Finally, the Procedural Knowledge layer provides algorithms to analyze clinical statements about a patient, in combination with the Assertional Knowledge, to recommend a treatment protocol for different kinds of hypertension, including the considerations of, (e.g., patient age, co-morbidities etc., which can be generated by an electronic clinical decision support system [Statement + Assertional layers]). This layer adds support for workflow and conditional logic (i.e., if-then-else).
+A clear separation of concerns enables the isosemantic transformation of standards-based clinical statements to normal form in the Statement Model layer by decoupling structure from semantics and workflow.
+
+HL7 relies on implementation guides (for V2, CDA, and FHIR) to add sufficient terminology knowledge to standards-based clinical statements. Terminology constraints documented as profiles or templates are the mechanism to create interoperable implementation guides from health IT standards. Only after the Terminology Knowledge is fully defined can the standards-based statements be used to support business and workflow decision points consistent with the Assertional and Procedural layers described above.
+
 ### About this Document
 
-# Business Requirements
+This document describes how encoded clinical data can be improved with a terminology management model. This terminology can be unified for HL7 and non-HL7 systems. The Terminology Knowledge Architecture, known as Tinkar, treats terminology in a common way for managing enhanced patient care and improved record keeping. The unification of models such as SNOMED CT®, LOINC®, and RxNorm will allow more robust computable medical records. The following sections contain the Tinkar Reference Model, along with illustrative examples as to the complexity and necessity of type of structure. Tinkar will take different language sources and cohesively manage terminology data. Section 2 lays out the specific business requirements necessary for this task. The model representation is outlined in Section 3.
 
+Section 4 shows how Tinkar brings together the biomedical terminologies by a common description format. An implementation of the Tinkar specification can be used to fill the gaps between the common HL7 Terminologies and other systems like SNOMED CT®, RxNorm, UCUM, etc. The result is the distribution and sharing of cohesive data across all platforms.
+
+Tinkar overview, business requirements, model overview, Komet user guide, next steps, and Tinkar model concepts to be included here.
+
+## Business Requirements
+
+This section details specific business requirements for a Tinkar logical model.
+
+### Clinical Requirements
+
+The ultimate goal of this effort is to <ins>support the coordination of safe, effective medicine (Requirement 1)</ins>. This goal requires <ins>quality information in the patient record (Requirement 2)</ins>, wherever it comes from, and the increasingly distributed nature of care that requires <ins>commonly understood data standards (Requirement 3)</ins> to ensure mutual comprehension across the care team and over time. There are four outlined clinical use cases:
+
+- **Record Patient Data**
+
+A care provider, already authenticated and authorized to the system and using the appropriate context to ensure the system records the data for the correct patient, adds or modifies information in the patient record. This may include signs, symptoms, impressions, diagnoses, orders, notes, or other assets. 
+
+This operation may initiate workflow processes or automated processes such as clinical decision support suggestions.
+
+For structured data using standard terminologies, the <ins>terms available are appropriate (Requirement 4)</ins> for the clinical context, for the role (i.e., terms may differ for different kinds of users), and for the data context (e.g., data entry fields may not support inactive or deprecated terms that would be allowed in search or analytical contexts).
+
+If the available terminology does not support the provider’s needs, the provider may assert a need for a new term.
+
+- **Propose Terminology Change**
+
+If a provider attempts to enter a term that is not supported by the enterprise terminology, the <ins>effort will be captured as a proposed term (Requirement 5)</ins>. 
+
+Systems may capture this information unobtrusively as text, or prompt further information from the clinician to assist the authoring process. The system will convey at least the text and the identity of the clinician to the terminologist.
+
+- **Review Patient Data**
+
+A provider, already authenticated and authorized to the system and using the appropriate context to ensure the system records the data for the correct patient, finds and reviews information in the patient record. For structured data using standard terminologies, the terms available are appropriate for the clinical context, for the role (i.e., terms may differ for different kinds of users), and for the data context (i.e., data entry fields may not support inactive or deprecated terms that would be allowed in search or analytical contexts).
+
+<ins>Changes to the terminology that could affect record interpretation will be indicated (Requirement 6), along with a way to identify the change and its effect</ins>.
+
+- **Review Knowledge Base Changes Relevant to Record**
+
+If the system identifies a relevant change, the provider may request further information. 
+
+This will include the ability to <ins>see available values and CDS results for specific dates and contexts (Requirement 7)</ins>, including those under which the data was recorded or specific decisions were made.
+
+*Clinical Use Cases*
+
+The key capability for a clinician should be to record and review data quickly and accurately (Requirement 8), taking advantage of up-to-date classifications and decision support rules. This should be accomplished by knowing when a change in the knowledge base might affect a record. The change management capability that supports these operations should be as unobtrusive as possible to patients and care providers, and always readily available.
+
+These operations depend on the availability not only of currently accurate terminology assets, but also assets from prior points in time (Requirement 7). These may include assets as defined or refined by different stakeholders with different sets of assumptions. For instance, whether a disorder meets a criterion defined by a standard terminology, a payor, a professional society, or a locally chartered board of specialists.
+
+To support these needs, the Enterprise Terminology that supports the clinical systems must <ins>manage change systematically (Requirement 9)</ins>, and it must do so for both internally-managed and externally-sourced assets.
+
+### Asset Curation Requirements
+
+### Configuration Requirements
+
+### List of Requirements

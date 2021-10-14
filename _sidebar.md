@@ -1,3 +1,2 @@
-* [Home](/)
-* [Introduction](introduction.md)
+* [Introduction](/)
 * [Foundational Architecture](foundational-architecture.md)

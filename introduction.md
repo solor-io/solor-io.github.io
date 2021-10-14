@@ -33,7 +33,10 @@ The Solor Project is a VHA-funded terminology solution that brings together data
 
 The Solor Project can address the gaps in mapping by providing highly reliable semantic interoperability, or in other words, **ensuring the exchange of medical information between different health care systems can be interpreted**.
 
-![Key Solor Benefits](media/key_solor-benefits.jpg)
+<p align="center">
+  <img src="/media/key_solor-benefits.jpg">
+</p>
+
 
 Because Solor enables semantic interoperability, health care organizations can become **Highly Reliable Organizations (HROs)**. Solor’s HRO Approach includes:
 
@@ -47,7 +50,10 @@ Increased reliance on computerized health records, including Electronic Health R
 
 Functional decomposition—often referred to as a *Separation of Concerns (SoC)* —across components or sections with a specific purpose is a foundational design principle for complex system architecture. SoC allows a complete system to be subdivided into distinct sections or components with well-defined functionality and dependencies. If successful, this approach allows individual sections to be able to be *reused*, as well as designed, implemented, and updated *independently* to address emerging *requirements*. This is especially useful and important in a medical context given how many different health information and clinical terminology projects are ongoing at any given time. Efforts are often uncoordinated and led by disparate and unrelated standards development organizations. In these cases, SoC allows teams to work independently, in coordination with each other, and reuse the resulting artifacts.
 
-![Seperation of Concerns: Knowledge Architecture](media/knowledge_architecture.jpg)
+<p align="center">
+  <img src="/media/separation_of_concerns_knowledge_architecture.jpg">
+</p>
+
 
 *Separation of Concerns is an architectural design principle, whereby a system is divided into distinct sections, such that each section can address separate concerns. In this case, each architectural layer may build upon artifacts from lower layers.*
 
